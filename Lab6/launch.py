@@ -16,13 +16,15 @@ implementations in C++ and Java by Scott Knight and Greg Phillips
 
 import tkinter as tk
 
+#from Lab6.competitors.TessierDesrochersJohnson import Joesquito
 from competitors.HuntingInstructors import Hunter
 from competitors.AgrarianInstructors import SuperPlant
+from competitors.TessierDesrochersJohnson import Joesquito
 
 from framework import BugBattle
 
 WORLD_WIDTH = 100
-COMPETITOR_CLASSES = (Hunter, SuperPlant)
+COMPETITOR_CLASSES = (Hunter, SuperPlant,Joesquito)
 
 if __name__ == '__main__':
     root = tk.Tk()
