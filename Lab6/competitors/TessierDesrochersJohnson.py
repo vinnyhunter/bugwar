@@ -1,7 +1,8 @@
 #allo
+from random import random
 
+from shared import Creature, Cilia, CreatureTypeSensor, Propagator, Direction, Soil, Plant,PhotoGland, Spikes,Cloaking,PoisonGland
 
-from shared import Creature, Cilia, CreatureTypeSensor, Propagator, Direction, Soil, Plant,PhotoGland, Spikes
 
 
 
@@ -16,8 +17,10 @@ class Joesquito(Creature):
         self.type_sensor = None
         self.cilia = None
 
+
     def do_turn(self):
-        if not (self.cilia and self.type_sensor and self.womb):
+
+        if not (self.cilia and self.type_sensor and self.womb ):
             self.create_organs()
         else:
             self.reproduce_if_able()
@@ -66,18 +69,23 @@ class joesquitopropage(Propagator):
         joesquitopropage.__instance_count += 1
 
     def make_child(self):
+        if joesquitopropage.__instance_count <1000:
+            return Joesquito()
         if (joesquitopropage.__instance_count % 2)==0:
             return Joesquito()
         else:
             return LittleJoesquito()
 
 class LittleJoesquito(Joesquito):
+
     def __init__(self):
         super().__init__()
-        self.spike=None
+        self.poison=None
         self.photogland=None
         self.spike2=None
         self.photogland2=None
+
+
 
     def do_turn(self):
         breed=False
@@ -86,19 +94,29 @@ class LittleJoesquito(Joesquito):
                 victim = self.type_sensor.sense(d)
                 if  victim != Joesquito or victim != LittleJoesquito:
                     breed=True
-        if not (self.photogland and self.type_sensor and self.womb and self.cilia):
+
+        if  Joesquito.instance_count() > 4000:
+
+            if not (self.cilia and self.type_sensor and self.womb):
+                self.create_organs()
+            else:
+                self.reproduce_if_able()
+                did_attack = self.find_someone_to_attack()
+                if not (did_attack and (self.type_sensor.sense(Direction.N)==LittleJoesquito or self.type_sensor.sense(Direction.N)==Joesquito)) :
+                    self.cilia.move_in_direction(Direction.N)
+        elif not (self.photogland and self.type_sensor and self.womb and self.cilia):
             self.create_organs()
-        elif not(self.spike and self.strength() > Spikes.CREATION_COST):
-            self.spike=Spikes(self)
         elif breed:
             self.reproduce_if_able()
         elif not(self.photogland2 and self.strength() > PhotoGland.CREATION_COST):
             self.photogland2=PhotoGland(self)
-        elif not(self.spike2 and self.strength() > Spikes.CREATION_COST):
-            self.spike2=Spikes(self)
+        elif not(self.poison and self.strength() > PoisonGland.CREATION_COST):
+            self.poison=PoisonGland(self)
+        elif self.strength() > 1000:
+            self.poison.add(500)
         else:
             self.reproduce_if_able()
-            self.find_someone_to_attack()
+            attack=self.find_someone_to_attack()
 
 
 
