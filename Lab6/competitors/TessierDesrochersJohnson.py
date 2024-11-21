@@ -56,13 +56,33 @@ class Joesquito(Creature):
         Joesquito.__instance_count -= 1
 
 class joesquitopropage(Propagator):
+
+    def __init__(self):
+        super().__init__()
+        joesquitopropage.__instance_count += 1
     def make_child(self):
-        return LittleJoesquito()
+        if joesquitopropage.__instance_count%2==0:
+            return Joesquito()
+        else:
+            return LittleJoesquito()
 
 class LittleJoesquito(Joesquito):
     def __init__(self):
         super().__init__()
+        self.spike=None
+        self.photogland=None
 
+    def do_turn(self):
+        if not (self.photogland and self.type_sensor and self.womb):
+            self.create_organs()
+    
+    def create_organs(self):
+        if not self.photogland and self.strength() > PhotoGland.CREATION_COST:
+            self.PhotoGland= PhotoGland(self)
+        if not self.type_sensor and self.strength() > CreatureTypeSensor.CREATION_COST:
+            self.type_sensor = CreatureTypeSensor(self)
+        if not self.womb and self.strength() > Propagator.CREATION_COST:
+            self.womb = joesquitopropage(self)
 
 
 
