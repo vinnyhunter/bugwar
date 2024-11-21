@@ -1,9 +1,8 @@
 #allo
 
 
-from shared import Creature, Cilia, CreatureTypeSensor, Propagator, Direction, Soil, Plant,PhotoGland
+from shared import Creature, Cilia, CreatureTypeSensor, Propagator, Direction, Soil, Plant,PhotoGland, Spikes
 
-from Lab6.shared import Spikes
 
 
 class Joesquito(Creature):
@@ -77,23 +76,45 @@ class LittleJoesquito(Joesquito):
         super().__init__()
         self.spike=None
         self.photogland=None
+        self.spike2=None
+        self.photogland2=None
 
     def do_turn(self):
-        if not (self.photogland and self.type_sensor and self.womb):
+        breed=False
+        if self.type_sensor :
+            for d in Direction:
+                victim = self.type_sensor.sense(d)
+                if  victim != Joesquito or victim != LittleJoesquito:
+                    breed=True
+        if not (self.photogland and self.type_sensor and self.womb and self.cilia):
             self.create_organs()
         elif not(self.spike and self.strength() > Spikes.CREATION_COST):
             self.spike=Spikes(self)
+        elif breed:
+            self.reproduce_if_able()
+        elif not(self.photogland2 and self.strength() > PhotoGland.CREATION_COST):
+            self.photogland2=PhotoGland(self)
+        elif not(self.spike2 and self.strength() > Spikes.CREATION_COST):
+            self.spike2=Spikes(self)
         else:
             self.reproduce_if_able()
+            self.find_someone_to_attack()
+
+
 
 
     def create_organs(self):
         if not self.photogland and self.strength() > PhotoGland.CREATION_COST:
             self.photogland= PhotoGland(self)
+        if not self.cilia and self.strength() > Cilia.CREATION_COST:
+            self.cilia = Cilia(self)
         if not self.type_sensor and self.strength() > CreatureTypeSensor.CREATION_COST:
             self.type_sensor = CreatureTypeSensor(self)
         if not self.womb and self.strength() > Propagator.CREATION_COST:
             self.womb = joesquitopropage(self)
+        if not self.photogland2 and self.strength() > PhotoGland.CREATION_COST:
+            self.photogland2= PhotoGland(self)
+
 
 
 
