@@ -32,7 +32,7 @@ class Joesquito(Creature):
         if not self.type_sensor and self.strength() > CreatureTypeSensor.CREATION_COST:
             self.type_sensor = CreatureTypeSensor(self)
         if not self.womb and self.strength() > Propagator.CREATION_COST:
-            self.womb = joesquitopropage()
+            self.womb = joesquitopropage(self)
 
     def reproduce_if_able(self):
         if self.strength() >= 0.9 * Creature.MAX_STRENGTH:
@@ -60,11 +60,14 @@ class Joesquito(Creature):
 
 class joesquitopropage(Propagator):
 
-    def __init__(self):
-        super().__init__()
+    __instance_count = 0
+
+    def __init__(self,host):
+        super().__init__(host)
         joesquitopropage.__instance_count += 1
+
     def make_child(self):
-        if joesquitopropage.__instance_count%2==0:
+        if (joesquitopropage.__instance_count % 2)==0:
             return Joesquito()
         else:
             return LittleJoesquito()
@@ -86,11 +89,11 @@ class LittleJoesquito(Joesquito):
 
     def create_organs(self):
         if not self.photogland and self.strength() > PhotoGland.CREATION_COST:
-            self.PhotoGland= PhotoGland(self)
+            self.photogland= PhotoGland(self)
         if not self.type_sensor and self.strength() > CreatureTypeSensor.CREATION_COST:
             self.type_sensor = CreatureTypeSensor(self)
         if not self.womb and self.strength() > Propagator.CREATION_COST:
-            self.womb = joesquitopropage()
+            self.womb = joesquitopropage(self)
 
 
 
