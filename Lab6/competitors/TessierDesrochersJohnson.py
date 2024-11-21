@@ -3,6 +3,9 @@
 
 from shared import Creature, Cilia, CreatureTypeSensor, Propagator, Direction, Soil, Plant,PhotoGland
 
+from Lab6.shared import Spikes
+
+
 class Joesquito(Creature):
 
     __instance_count = 0
@@ -29,7 +32,7 @@ class Joesquito(Creature):
         if not self.type_sensor and self.strength() > CreatureTypeSensor.CREATION_COST:
             self.type_sensor = CreatureTypeSensor(self)
         if not self.womb and self.strength() > Propagator.CREATION_COST:
-            self.womb = joesquitopropage(self)
+            self.womb = joesquitopropage()
 
     def reproduce_if_able(self):
         if self.strength() >= 0.9 * Creature.MAX_STRENGTH:
@@ -75,14 +78,19 @@ class LittleJoesquito(Joesquito):
     def do_turn(self):
         if not (self.photogland and self.type_sensor and self.womb):
             self.create_organs()
-    
+        elif not(self.spike and self.strength() > Spikes.CREATION_COST):
+            self.spike=Spikes(self)
+        else:
+            self.reproduce_if_able()
+
+
     def create_organs(self):
         if not self.photogland and self.strength() > PhotoGland.CREATION_COST:
             self.PhotoGland= PhotoGland(self)
         if not self.type_sensor and self.strength() > CreatureTypeSensor.CREATION_COST:
             self.type_sensor = CreatureTypeSensor(self)
         if not self.womb and self.strength() > Propagator.CREATION_COST:
-            self.womb = joesquitopropage(self)
+            self.womb = joesquitopropage()
 
 
 
